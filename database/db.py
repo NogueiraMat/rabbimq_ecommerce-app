@@ -1,17 +1,22 @@
 import psycopg2
 from contextlib import contextmanager
 
+db_pool = psycopg2.pool.SimpleConnectionPool(
+    1, 
+    10,
+    host="localhost",
+    database="ecommerce",
+    user="admin",
+    password="admin"
+)
 
 @contextmanager
 def get_db_connection():
-    conn = psycopg2.connect(
-        host="localhost", database="ecommerce", user="admin", password="admin"
-    )
+    conn = db_pool.getconn()
     try:
         yield conn
     finally:
-        conn.close()
-
+        db_pool.putconn(conn)
 
 def insert_order(order_data):
     try:
@@ -29,7 +34,6 @@ def insert_order(order_data):
 
     except psycopg2.Error as e:
         return {"success": False, "error": str(e)}
-
 
 def insert_order_item(order_id: str, order_item):
     try:
@@ -51,7 +55,6 @@ def insert_order_item(order_id: str, order_item):
         return {"success": True, "msg": "Order item inserted successfully!"}
     except psycopg2.Error as e:
         return {"success": False, "error": str(e)}
-
 
 def fetch_order():
     data = []
@@ -75,15 +78,14 @@ def fetch_order():
                     data.append(
                         {
                             "id": result[0],
-                            "created_at": result[1],
+                            "created_at": str(result[1]),
                             "client_id": result[2],
                             "status": result[3],
                         }
                     )
-        return {"succes": True, "data": data}
+        return {"success": True, "data": data}
     except psycopg2.Error as e:
         return {"success": False, "error": str(e)}
-
 
 def fetch_order_item(order_id: str):
     data = []
@@ -116,7 +118,6 @@ def fetch_order_item(order_id: str):
                         }
                     )
 
-        return {"succes": True, "data": data}
+        return {"success": True, "data": data}
     except psycopg2.Error as e:
         return {"success": False, "error": str(e)}
-
