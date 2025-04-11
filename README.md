@@ -19,6 +19,7 @@ The system is structured around the following key components:
 ```bash
 # 1. Start PostgreSQL and RabbitMQ containers
 docker compose up --build
+````
 
 # 2. Navigate to the `database` folder
 cd database
