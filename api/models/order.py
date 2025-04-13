@@ -11,6 +11,6 @@ class OrderProductModel(BaseModel):
 
 class RequestOrder(BaseModel):
     created_at: Optional[datetime] = datetime.now()
-    client_id: int
+    user_id: int
     order_item_list: list[OrderProductModel]
 

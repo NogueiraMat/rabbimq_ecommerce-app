@@ -25,10 +25,10 @@ def insert_order(order_data):
             with conn.cursor() as cursor:
                 cursor.execute(
                     """
-                        INSERT INTO "order" (id, created_at, client_id)
+                        INSERT INTO "order" (id, created_at, user_id)
                         VALUES (%s, %s, %s)
                     """,
-                    (order_data.id, order_data.created_at, order_data.client_id),
+                    (order_data.id, order_data.created_at, order_data.user_id),
                 )
                 conn.commit()
         return {"success": True, "message": "Order inserted successfully."}
@@ -69,7 +69,7 @@ def fetch_order():
                         SELECT 
                             id as ID,
                             created_at as CREATED_AT,
-                            client_id as CLIENT_ID,
+                            user_id as USER_ID,
                             status as STATUS
                         FROM "order";
                     """
@@ -82,7 +82,7 @@ def fetch_order():
                         {
                             "id": result[0],
                             "created_at": str(result[1]),
-                            "client_id": result[2],
+                            "user_id": result[2],
                             "status": result[3],
                         }
                     )
@@ -142,8 +142,8 @@ def insert_user(user_data):
             with conn.cursor() as cursor:
                 cursor.execute(
                     """
-                        INSERT INTO client (username, password, firstname, lastname, address)
-                        VALUES (%s, %s, %s, %s, %s)
+                        INSERT INTO "user" (username, password, firstname, lastname, address, role)
+                        VALUES (%s, %s, %s, %s, %s, %s)
                     """,
                     (
                         user_data.username,
@@ -151,6 +151,7 @@ def insert_user(user_data):
                         user_data.firstname,
                         user_data.lastname,
                         user_data.address,
+                        user_data.role,
                     ),
                 )
                 conn.commit()
@@ -165,7 +166,7 @@ def fetch_a_user(username):
             with conn.cursor() as cursor:
                 cursor.execute(
                     f"""
-                        SELECT * FROM client 
+                        SELECT * FROM "user" 
                         WHERE username = '{username}'
                     """
                 )
@@ -180,6 +181,7 @@ def fetch_a_user(username):
                         "lastname": result[0][4],
                         "address": result[0][5],
                         "created_at": str(result[0][6]),
+                        "role": result[0][7],
                     }
                 return None
     except psycopg2.Error as e:

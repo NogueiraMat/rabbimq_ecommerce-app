@@ -7,8 +7,18 @@ class RequestAuthentication(BaseModel):
     password: str
 
 
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    firstname: str
+    lastname: str
+    address: str
+    role: str
+    access_token: str
+
+
 class ResponseAuthentication(BaseModel):
     msg: Optional[str] = None
     error: Optional[str] = None
-    data: Union[str, dict]
+    data: Union[str, UserResponse]
 

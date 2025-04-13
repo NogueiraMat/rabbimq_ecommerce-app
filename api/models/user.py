@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class RequestUser(BaseModel):
@@ -7,4 +8,5 @@ class RequestUser(BaseModel):
     firstname: str
     lastname: str
     address: str
+    role: Optional[str] = "NORMAL"
 

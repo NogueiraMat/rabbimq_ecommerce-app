@@ -1,13 +1,15 @@
+CREATE TYPE user_role AS ENUM ('ADMIN', 'NORMAL');
 CREATE TYPE order_status AS ENUM ('PENDING', 'SENT', 'CANCELED');
 
-CREATE TABLE client (
+CREATE TABLE "user" (
   id SERIAL PRIMARY KEY,
   username VARCHAR NOT NULL UNIQUE,
   password VARCHAR NOT NULL,
   firstname VARCHAR NOT NULL,
   lastname VARCHAR NOT NULL,
   address VARCHAR NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  role user_role NOT NULL DEFAULT 'NORMAL'
 );
 
 CREATE TABLE product (
@@ -32,9 +34,9 @@ CREATE TABLE stock (
 CREATE TABLE "order" (
   id VARCHAR PRIMARY KEY,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  client_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
   status order_status NOT NULL DEFAULT 'PENDING',
-  CONSTRAINT fk_order_client FOREIGN KEY (client_id) REFERENCES client(id)
+  CONSTRAINT fk_order_user FOREIGN KEY (user_id) REFERENCES "user"(id)
 );
 
 CREATE TABLE order_item (
@@ -47,6 +49,6 @@ CREATE TABLE order_item (
   CONSTRAINT fk_order_item_product FOREIGN KEY (product_id) REFERENCES product(id)
 );
 
-CREATE INDEX idx_order_client_id ON "order"(client_id);
+CREATE INDEX idx_order_user_id ON "order"(user_id);
 CREATE INDEX idx_order_status ON "order"(status);
 CREATE INDEX idx_order_item_order_id ON order_item(order_id);

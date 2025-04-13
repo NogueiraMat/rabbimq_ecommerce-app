@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 
-from database.db import insert_user
 from ..models.user import RequestUser
+from database.db import insert_user
 
 
 router = APIRouter()

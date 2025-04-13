@@ -1,9 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
-from fastapi.security import HTTPBasicCredentials
 from typing import Optional
 
 from database.db import insert_product, fetch_products
-from utils.authentication import require_admin_user
 from ..models.product import RequestProduct
 
 
@@ -11,10 +9,7 @@ router = APIRouter()
 
 
 @router.post("/product")
-def add_product(
-    product_data: RequestProduct,
-    credentials: HTTPBasicCredentials = Depends(require_admin_user),
-):
+def add_product(product_data: RequestProduct):
     try:
         new_product = insert_product(product_data)
         if new_product["success"] == False:
